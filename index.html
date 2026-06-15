@@ -38,7 +38,7 @@
         #layer-sky { z-index: 1; background-image: linear-gradient(to bottom, #4ba3e3, #a1d6f7); }
         
         /* ISI LINK GAMBAR BACKGROUND DI SINI */
-        #layer-clouds { z-index: 2; opacity: 0.85; animation: cloudFloat 60s linear infinite; background-image: url('asset/images/awan2.png'); }
+        #layer-clouds { z-index: -2; opacity: 0.85; animation: cloudFloat 60s linear infinite; background-image: url('asset/images/awan2.png'); }
         #layer-mountain { z-index: 3; y-index: -2; transform-origin: bottom;animation: cloudFloat 180s linear infinite; background-image: url('asset/images/gunung.png'); }
 
         /* Karakter Ninja Bergerak Naik-Turun */
@@ -48,7 +48,7 @@
             display: flex; flex-direction: column; align-items: center;
         }
         .character-img {
-            width: 200%; height: auto;
+            width: 400%; height: auto;
             content: url('asset/images/karakter.png'); /* ISI LINK GAMBAR NINJA */
         }
 
