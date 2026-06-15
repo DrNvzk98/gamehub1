@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game UI Ninja - Parallax SPA Prototype</title>
+    <title>Game UI Ninja V2 - Dropdown & Parallax</title>
     <style>
-        /* Base Reset & Core Styles */
+        /* ==========================================================================
+           1. ATURAN DASAR & VIEWPORT GAME
+           ========================================================================== */
         *, *::before, *::after {
             box-sizing: border-box;
             user-select: none;
@@ -23,107 +25,167 @@
             color: #fff;
         }
 
-        /* Responsive Game Viewport Container */
+        /* Pembatas layar game dengan aspek rasio 16:9 agar pas di monitor/HP */
         #game-viewport {
-            position: relative;
-            width: 100vw;
-            height: 56.25vw; /* 16:9 Aspect Ratio */
-            max-height: 100vh;
-            max-width: 177.78vh; /* 16:9 Aspect Ratio */
-            margin: auto;
             position: absolute;
             top: 0; bottom: 0; left: 0; right: 0;
+            width: 100vw;
+            height: 56.25vw; 
+            max-height: 100vh;
+            max-width: 177.78vh; 
+            margin: auto;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            background: linear-gradient(to bottom, #7ec0ee, #b0e2ff);
+            background: #7ec0ee; /* Warna langit sementara */
         }
 
-        /* Shared Parallax & Static Background Layers */
+        /* ==========================================================================
+           2. TEMPAT MEMASUKKAN GAMBAR UTAMA (PETUNJUK GAMBAR ADA DI BAWAH)
+           ========================================================================== */
         .layer {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             will-change: transform;
         }
 
-        /* Placeholder background colors until user injects actual asset URLs */
         #layer-sky {
-            background-image: linear-gradient(to bottom, #4ba3e3, #a1d6f7);
             z-index: 1;
+            /* GANTI dengan gambar langit Anda jika ada */
+            background-image: linear-gradient(to bottom, #4ba3e3, #a1d6f7); 
         }
 
         #layer-clouds {
             z-index: 2;
             opacity: 0.85;
             animation: cloudFloat 60s linear infinite;
-            /* Placeholder pattern for clouds */
-            background-image: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 15%),
-                              radial-gradient(circle at 75% 20%, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 25%);
+            /* PETUNJUK: Masukkan gambar awan transparan (PNG) di url bawah ini */
+            background-image: url('LINK_GAMBAR_AWAN_ANDA.png'); 
         }
 
         #layer-mountain {
             z-index: 3;
             transform-origin: bottom center;
-            /* Placeholder triangle representation of the mountain */
-            background: radial-gradient(circle at 30% 120%, #447a3a 0%, #295221 60%, transparent 61%);
+            /* PETUNJUK: Masukkan gambar gunung transparan (PNG) di url bawah ini */
+            background-image: url('LINK_GAMBAR_GUNUNG_ANDA.png'); 
+            /* Contoh warna fallback jika gambar belum dimasukkan: */
+            background-color: transparent; 
         }
 
-        /* Reusable UI Components */
-        .ui-scene {
-            position: absolute;
-            top: 0;
-            left: 0;
+        /* Gaya Karakter Ninja */
+        .character-img-placeholder {
             width: 100%;
-            height: 100%;
-            z-index: 10;
-            display: none; /* Controlled via JS switch */
-            padding: 3% 5%;
+            aspect-ratio: 0.9;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            /* PETUNJUK: Masukkan gambar tokoh ninja transparan (PNG) di bawah ini */
+            background-image: url('LINK_GAMBAR_NINJA_ANDA.png');
         }
 
-        .ui-scene.active {
-            display: block;
-        }
-
-        /* Global HUD Menu Button (Top Right) */
-        .hud-menu-btn {
+        /* ==========================================================================
+           3. KODE BARU: DROPDOWN MENU (POJOK KANAN ATAS)
+           ========================================================================== */
+        .hud-menu-container {
             position: absolute;
             top: 4%;
             right: 4%;
-            width: 6%;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+            width: 20%;
+        }
+
+        /* Tombol pemicu (Garis Tiga) */
+        .hud-menu-btn {
+            width: 5.5vw;
             aspect-ratio: 1;
             background: #a0522d;
             border: 4px solid #5c2e16;
             border-radius: 50%;
             box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 4px 0 rgba(255,255,255,0.3);
             cursor: pointer;
-            z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.15s ease;
         }
-        
+
         .hud-menu-btn::before {
             content: "☰";
             color: #f7d070;
-            font-size: 2vw;
+            font-size: 2.2vw;
             font-weight: bold;
         }
 
-        .hud-menu-btn:hover {
-            transform: scale(1.1);
-        }
-        
-        .hud-menu-btn:active {
-            transform: scale(0.95);
+        .hud-menu-btn:hover { transform: scale(1.1); }
+        .hud-menu-btn:active { transform: scale(0.95); }
+
+        /* Wadah isi dropdown menu */
+        .dropdown-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            max-height: 0; /* Tersembunyi di awal */
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.2s ease;
+            opacity: 0;
+            pointer-events: none;
         }
 
-        /* Animated Character Ninja Container */
+        /* Ketika dropdown aktif (dibuka lewat JS) */
+        .dropdown-menu.show {
+            max-height: 300px; /* Batas tinggi saat meluncur turun */
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Tombol di dalam dropdown bergaya kayu */
+        .btn-dropdown-item {
+            width: 100%;
+            padding: 8% 5%;
+            background: #ffa726;
+            border: 4px solid #b35c00;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1.4vw;
+            font-weight: bold;
+            cursor: pointer;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 0 #803e00, 0 6px 10px rgba(0,0,0,0.3);
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            text-align: center;
+        }
+
+        .btn-dropdown-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 5px 0 #803e00, 0 7px 12px rgba(0,0,0,0.3);
+        }
+
+        .btn-dropdown-item:active {
+            transform: scale(0.98) translateY(4px);
+            box-shadow: 0 0px 0 #803e00, 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* ==========================================================================
+           4. ANIMASI & TAMPILAN ELEMEN GAME (SCENE)
+           ========================================================================== */
+        .ui-scene {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10;
+            display: none;
+            padding: 3% 5%;
+        }
+
+        .ui-scene.active { display: block; }
+
+        /* Karakter Ninja Bergerak Naik Turun */
         .character-ninja {
             position: absolute;
             width: 18%;
@@ -136,56 +198,24 @@
             align-items: center;
         }
 
-        /* Positional Modifier variations per scene */
         .pos-right { right: 10%; }
         .pos-left { left: 10%; }
 
-        .character-img-placeholder {
-            width: 100%;
-            aspect-ratio: 0.9;
-            background: #4caf50;
-            border-radius: 30% 30% 10% 10%;
-            border: 5px solid #2e7d32;
-            position: relative;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-        }
-        /* Temporary sword visual block */
-        .character-img-placeholder::after {
-            content: '';
-            position: absolute;
-            width: 50%;
-            height: 15%;
-            background: #00bcd4;
-            border: 3px solid #00838f;
-            top: 50%;
-            right: -30%;
-            transform: rotate(-15deg);
-            border-radius: 4px;
-        }
-
         .character-platform {
-            width: 90%;
-            height: 15px;
-            background: #673ab7;
-            border: 3px solid #4527a0;
-            border-radius: 50%;
-            margin-top: 10px;
+            width: 90%; height: 15px;
+            background: #673ab7; border: 3px solid #4527a0;
+            border-radius: 50%; margin-top: 10px;
             box-shadow: 0 5px 10px rgba(0,0,0,0.4);
         }
 
-        /* Large Action Buttons (Start & Main Selection Blocks) */
+        /* Tombol Besar Start */
         .btn-orange-large {
-            background: #ffb74d;
-            border: 6px solid #ff9800;
-            color: #fff;
-            font-size: 4.5vw;
-            font-weight: 900;
-            text-shadow: 3px 3px 0px #e65100, -2px -2px 0px #e65100, 2px -2px 0px #e65100, -2px 2px 0px #e65100;
-            padding: 2% 6%;
-            border-radius: 20px;
+            background: #ffb74d; border: 6px solid #ff9800; color: #fff;
+            font-size: 4.5vw; font-weight: 900;
+            text-shadow: 3px 3px 0px #e65100, -2px -2px 0px #e65100;
+            padding: 2% 6%; border-radius: 20px;
             box-shadow: 0 10px 0px #e65100, 0 15px 20px rgba(0,0,0,0.4);
-            cursor: pointer;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            cursor: pointer; transition: all 0.1s ease;
             letter-spacing: 2px;
         }
 
@@ -199,139 +229,65 @@
             box-shadow: 0 3px 0px #e65100, 0 5px 10px rgba(0,0,0,0.4);
         }
 
-        /* SCENE 1: START SCREEN SPECIFICS */
-        #scene-start {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        #scene-start .center-container {
-            margin-top: -5%;
-            margin-left: -20%;
-        }
+        #scene-start { display: flex; justify-content: center; align-items: center; }
+        #scene-start .center-container { margin-top: -5%; margin-left: -20%; }
 
-        /* SCENE 2: MENU OPTIONS SPECIFICS */
+        /* Menu Utama Gambar 2 */
         .menu-list-container {
-            position: absolute;
-            left: 40%;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 35%;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            position: absolute; left: 40%; top: 50%;
+            transform: translateY(-50%); width: 35%;
+            display: flex; flex-direction: column; gap: 20px;
         }
 
         .btn-menu-wood {
-            width: 100%;
-            height: 7vw;
-            background: #ffa726;
-            border: 5px solid #b35c00;
-            border-radius: 12px;
-            box-shadow: inset 0 5px 0 rgba(255,255,255,0.4), 0 6px 0 #803e00, 0 10px 15px rgba(0,0,0,0.3);
-            cursor: pointer;
-            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.25);
+            width: 100%; height: 7vw; background: #ffa726;
+            border: 5px solid #b35c00; border-radius: 12px;
+            box-shadow: inset 0 5px 0 rgba(255,255,255,0.4), 0 6px 0 #803e00;
+            cursor: pointer; transition: all 0.15s ease;
         }
+        .btn-menu-wood:hover { transform: scale(1.04); }
 
-        .btn-menu-wood:hover {
-            transform: scale(1.04);
-            box-shadow: inset 0 5px 0 rgba(255,255,255,0.4), 0 8px 0 #803e00, 0 12px 20px rgba(0,0,0,0.3);
-        }
-        
-        .btn-menu-wood:active {
-            transform: scale(0.97) translateY(5px);
-            box-shadow: inset 0 2px 0 rgba(255,255,255,0.2), 0 1px 0 #803e00, 0 3px 5px rgba(0,0,0,0.3);
-        }
-
-        /* Right-hand side Circular Action Panel */
-        .side-icons-panel {
-            position: absolute;
-            right: 5%;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-        }
-
-        .btn-circle-wood {
-            width: 5.5vw;
-            aspect-ratio: 1;
-            background: #a0522d;
-            border: 4px solid #5c2e16;
-            border-radius: 50%;
-            box-shadow: inset 0 4px 0 rgba(255,255,255,0.3), 0 5px 0 #3d1f0e, 0 8px 12px rgba(0,0,0,0.4);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2vw;
-            font-weight: bold;
-            color: #f7d070;
-            transition: transform 0.12s ease;
-        }
-
-        .btn-circle-wood:hover { transform: scale(1.1); }
-        .btn-circle-wood:active { transform: scale(0.95); }
-
-        /* SCENE 3: LEVEL SELECTION SCREEN */
+        /* Level Grid Gambar 3 */
         .title-banner-wood {
-            width: 45%;
-            height: 7vw;
-            background: #e67e22;
-            border: 5px solid #a04000;
-            margin: 0 auto 3% auto;
-            border-radius: 40px 40px;
-            box-shadow: inset 0 5px 0 rgba(255,255,255,0.3), 0 6px 0 #78281f;
+            width: 45%; height: 7vw; background: #e67e22;
+            border: 5px solid #a04000; margin: 0 auto 3% auto;
+            border-radius: 40px; box-shadow: 0 6px 0 #78281f;
         }
 
         .level-grid {
-            width: 50%;
-            margin-left: 38%;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
+            width: 50%; margin-left: 38%;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px;
         }
 
-        /* SCENE 4: GAMEPLAY / TRACING CANVAS SCREEN */
+        .btn-circle-wood {
+            width: 5.5vw; aspect-ratio: 1; background: #a0522d;
+            border: 4px solid #5c2e16; border-radius: 50%;
+            color: #f7d070; font-size: 2vw; font-weight: bold;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 5px 0 #3d1f0e;
+        }
+        .btn-circle-wood:hover { transform: scale(1.1); }
+
+        /* Gameplay Gambar 4 */
         .game-instruction-text {
-            text-align: center;
-            font-size: 2.2vw;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-            margin-top: 2%;
-            letter-spacing: 1px;
+            text-align: center; font-size: 2.2vw;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8); margin-top: 2%;
         }
 
         .canvas-tracing-container {
-            position: absolute;
-            left: 20%;
-            top: 28%;
-            width: 32%;
-            height: 60%;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 24px;
-            border: 6px solid #333;
-            box-shadow: 0 12px 24px rgba(0,0,0,0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute; left: 20%; top: 28%; width: 32%; height: 60%;
+            background: rgba(255, 255, 255, 0.95); border-radius: 24px;
+            border: 6px solid #333; display: flex; align-items: center; justify-content: center;
         }
 
         .tracing-path-mockup {
-            width: 80%;
-            height: 80%;
-            border: 6px dashed #aaa;
-            border-radius: 50% 0 50% 50%;
-            position: relative;
+            width: 80%; height: 80%; border: 6px dashed #aaa; border-radius: 50% 0 50% 50%;
         }
 
-        /* Keyframe Animations */
+        /* Keyframes */
         @keyframes ninjaBob {
-            0% { transform: translateY(0); }
+            0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-15px); }
-            100% { transform: translateY(0); }
         }
 
         @keyframes cloudFloat {
@@ -343,113 +299,127 @@
 <body>
 
     <div id="game-viewport">
-        <!-- Parallax Background Layers Stack -->
         <div id="layer-sky" class="layer"></div>
         <div id="layer-clouds" class="layer"></div>
         <div id="layer-mountain" class="layer"></div>
 
-        <!-- Global HUD Home/Back Button -->
-        <div class="hud-menu-btn" title="Kembali ke Menu Utama" onclick="switchScene('scene-start')"></div>
+        <div class="hud-menu-container">
+            <div class="hud-menu-btn" title="Buka Menu" onclick="toggleDropdown()"></div>
+            <div id="myDropdown" class="dropdown-menu">
+                <button class="btn-dropdown-item" onclick="triggerMenuAction('info')">ℹ️ Info Game</button>
+                <button class="btn-dropdown-item" id="audio-toggle-btn" onclick="triggerMenuAction('musik')">🔊 Musik: ON</button>
+                <button class="btn-dropdown-item" onclick="triggerMenuAction('home')">⌂ Menu Utama</button>
+            </div>
+        </div>
 
-        <!-- ==================== SCENE 1: SCREEN AWAL ==================== -->
         <div id="scene-start" class="ui-scene active">
             <div class="center-container">
                 <button class="btn-orange-large" onclick="switchScene('scene-menu')">START</button>
             </div>
-            <!-- Character Layer Placement -->
             <div class="character-ninja pos-right">
-                <div class="character-img-placeholder" id="asset-ninja-s1"></div>
+                <div class="character-img-placeholder"></div>
                 <div class="character-platform"></div>
             </div>
         </div>
 
-        <!-- ==================== SCENE 2: MENU UTAMA ==================== -->
         <div id="scene-menu" class="ui-scene">
             <div class="menu-list-container">
                 <button class="btn-menu-wood" onclick="switchScene('scene-levels')"></button>
                 <button class="btn-menu-wood"></button>
                 <button class="btn-menu-wood"></button>
             </div>
-            
-            <div class="side-icons-panel">
-                <div class="btn-circle-wood">☰</div>
-                <div class="btn-circle-wood" onclick="switchScene('scene-start')">⌂</div>
-                <div class="btn-circle-wood">🔊</div>
-                <div class="btn-circle-wood">i</div>
-            </div>
-
             <div class="character-ninja pos-left">
-                <div class="character-img-placeholder" id="asset-ninja-s2"></div>
+                <div class="character-img-placeholder"></div>
                 <div class="character-platform"></div>
             </div>
         </div>
 
-        <!-- ==================== SCENE 3: PILIH LEVEL ==================== -->
         <div id="scene-levels" class="ui-scene">
             <div class="title-banner-wood"></div>
-            
             <div class="level-grid">
-                <!-- 12 Level Circular Nodes Grid -->
                 <div class="btn-circle-wood" onclick="switchScene('scene-gameplay')">1</div>
                 <div class="btn-circle-wood">2</div>
                 <div class="btn-circle-wood">3</div>
                 <div class="btn-circle-wood">4</div>
-                <div class="btn-circle-wood">5</div>
-                <div class="btn-circle-wood">6</div>
-                <div class="btn-circle-wood">7</div>
-                <div class="btn-circle-wood">8</div>
-                <div class="btn-circle-wood">9</div>
-                <div class="btn-circle-wood">10</div>
-                <div class="btn-circle-wood">11</div>
-                <div class="btn-circle-wood">12</div>
             </div>
-
             <div class="character-ninja pos-left">
-                <div class="character-img-placeholder" id="asset-ninja-s3"></div>
+                <div class="character-img-placeholder"></div>
                 <div class="character-platform"></div>
             </div>
         </div>
 
-        <!-- ==================== SCENE 4: STRUKTUR TEBALKAN HURUF ==================== -->
         <div id="scene-gameplay" class="ui-scene">
             <div class="game-instruction-text">TEBALKAN HURUF DI BAWAH SESUAI GARIS</div>
-            
             <div class="canvas-tracing-container">
-                <!-- This will map to your Image 4's tracing track component -->
                 <div class="tracing-path-mockup"></div>
             </div>
-
             <div class="character-ninja pos-right">
-                <div class="character-img-placeholder" id="asset-ninja-s4"></div>
+                <div class="character-img-placeholder"></div>
                 <div class="character-platform"></div>
             </div>
         </div>
     </div>
 
-    <!-- Parallax Logic & Interactivity Engine -->
     <script>
         const viewport = document.getElementById('game-viewport');
         const mountain = document.getElementById('layer-mountain');
         const clouds = document.getElementById('layer-clouds');
+        const dropdown = document.getElementById('myDropdown');
+        
+        let isMusicOn = true;
 
-        // Dynamic Parallax Mouse Tracking Functionality
+        // A. Kontrol Parallax Kamera mengikuti Mouse
         viewport.addEventListener('mousemove', (e) => {
             const rect = viewport.getBoundingClientRect();
             const x = e.clientX - rect.left - (rect.width / 2);
             const y = e.clientY - rect.top - (rect.height / 2);
 
-            // Subtle layered factor transforms
             mountain.style.transform = `translate(${x * 0.02}px, ${y * 0.01}px) scale(1.05)`;
             clouds.style.transform = `translate(${x * 0.005}px, 0px)`;
         });
 
-        // Scene Routers (State Switcher)
+        // B. Fungsi Buka-Tutup Dropdown Menu
+        function toggleDropdown() {
+            dropdown.classList.toggle('show');
+        }
+
+        // Tutup dropdown otomatis jika pengguna mengklik area luar menu game
+        window.onclick = function(event) {
+            if (!event.target.matches('.hud-menu-btn') && !event.target.matches('.btn-dropdown-item')) {
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        }
+
+        // C. Aksi Tombol di dalam Dropdown
+        function triggerMenuAction(actionType) {
+            dropdown.classList.remove('show'); // Tutup otomatis setelah diklik
+            
+            if (actionType === 'info') {
+                alert("Game Edukasi Ninja - Versi Prototipe UI.\nGunakan kursor untuk efek Parallax!");
+            } 
+            else if (actionType === 'musik') {
+                isMusicOn = !isMusicOn;
+                const musicBtn = document.getElementById('audio-toggle-btn');
+                if (isMusicOn) {
+                    musicBtn.innerText = "🔊 Musik: ON";
+                    // TULIS KODE: taruh perintah music.play() di sini nanti
+                } else {
+                    musicBtn.innerText = "🔇 Musik: OFF";
+                    // TULIS KODE: taruh perintah music.pause() di sini nanti
+                }
+            } 
+            else if (actionType === 'home') {
+                switchScene('scene-start'); // Kembali ke Layar Gambar 1
+            }
+        }
+
+        // D. Fungsi Navigasi Perpindahan Layar (Scene Router)
         function switchScene(sceneId) {
-            // Hide all scenes
             const scenes = document.querySelectorAll('.ui-scene');
             scenes.forEach(scene => scene.classList.remove('active'));
 
-            // Activate Target Scene
             const targetScene = document.getElementById(sceneId);
             if (targetScene) {
                 targetScene.classList.add('active');
