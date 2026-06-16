@@ -6,12 +6,12 @@
     <title>Ninja Arcade - Arabic Education Game</title>
     <style>
         /* ==========================================================================
-           [NOTE 1] LINK FONT GLOBAL 
-           Masukkan lokasi file font Lazydog milikmu di bagian url('') di bawah ini.
+           [NOTE 1] PENGATURAN FONT GLOBAL & UTAN ASPEK RATIO (16:9)
            ========================================================================== */
         @font-face {
             font-family: 'Lazydog';
-            src: url('') format('truetype'); /* ISI LINK FILE FONT KAMU DI SINI */
+            /* SILAKAN MASUKKAN LINK/PATH FILE FONT LAZYDOG KAMU DI BAWAH INI */
+            src: url('isi link (font lazydog) disini') format('truetype'); 
             font-weight: normal;
             font-style: normal;
         }
@@ -31,7 +31,6 @@
             font-family: 'Lazydog', sans-serif;
         }
 
-        /* Viewport Game Utama (Rasio 16:9) */
         #game-viewport {
             position: absolute;
             top: 50%;
@@ -47,8 +46,7 @@
         }
 
         /* ==========================================================================
-           [NOTE 2] EFEK PARALLAX BACKGROUND
-           Kamu bisa mengatur kecepatan durasi (s) di masing-masing animation.
+           [NOTE 2] PARALLAX EFFECT (Awan & Latar Belakang)
            ========================================================================== */
         .parallax-layer {
             position: absolute;
@@ -71,7 +69,7 @@
         }
 
         /* ==========================================================================
-           [NOTE 3] ANIMASI INTERAKTIF (Floating & Zoom)
+           [NOTE 3] ANIMASI JUMP & INTERAKTIF TOMBOL
            ========================================================================== */
         .ninja-floating {
             animation: ninjaFloat 3s ease-in-out infinite;
@@ -91,15 +89,19 @@
 
         .btn-interactive {
             cursor: pointer;
-            transition: transform 0.2s ease, filter 0.2s ease;
+            transition: transform 0.2s ease;
         }
-        .btn-interactive:hover { transform: scale(1.08); }
-        .btn-interactive:active { transform: scale(0.95); }
+        .btn-interactive:hover {
+            transform: scale(1.08); /* Efek zoom-in sedikit saat ditunjuk */
+        }
+        .btn-interactive:active {
+            transform: scale(0.95);
+        }
 
         .lazydog-text {
             font-family: 'Lazydog', sans-serif;
             color: #bd6a2c; 
-            -webkit-text-stroke: 2px white; 
+            -webkit-text-stroke: 2px white; /* Outline Putih */
             text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
             text-align: center;
         }
@@ -112,9 +114,10 @@
             top: 0;
             left: 0;
         }
-        .game-screen.active { display: block; }
+        .game-screen.active {
+            display: block;
+        }
 
-        /* Global UI Elements */
         #global-nav {
             position: absolute;
             top: 20px;
@@ -148,7 +151,7 @@
             z-index: 200;
         }
 
-        /* Layout Bank Huruf Horizontal Scroll */
+        /* Papan Kayu Panjang Tempat Bank Huruf Bawah */
         .letter-bank-container {
             position: absolute;
             bottom: 10px;
@@ -156,8 +159,8 @@
             transform: translateX(-50%);
             width: 85%;
             height: 100px;
-            /* ISI LINK BACKGROUND PAPAN KAYU PANJANG DI SINI */
-            background: url('') no-repeat center; 
+            /* MASUKKAN LINK PAPAN KAYU PANJANG DI BAWAH INI */
+            background: url('isi link (papan kayu panjang bank huruf) disini') no-repeat center;
             background-size: 100% 100%;
             overflow-x: auto;
             white-space: nowrap;
@@ -173,7 +176,6 @@
         #writing-canvas {
             background: transparent;
             cursor: crosshair;
-            border-radius: 20px;
         }
     </style>
 </head>
@@ -181,16 +183,17 @@
 
 <div id="game-viewport">
 
-    <div class="parallax-layer cloud-1" style="background-image: url(''); opacity: 0.5;"></div>
-    <div class="parallax-layer cloud-2" style="background-image: url(''); opacity: 0.3;"></div>
+    <div class="parallax-layer cloud-1" style="background-image: url('isi link (gambar awan 1) disini'); opacity: 0.5;"></div>
+    <div class="parallax-layer cloud-2" style="background-image: url('isi link (gambar awan 2) disini'); opacity: 0.3;"></div>
+    <div class="parallax-layer cloud-3" style="background-image: url('isi link (gambar awan 3) disini'); opacity: 0.4;"></div>
     
     <audio id="bgm" loop>
-        <source src="" type="audio/mpeg">
+        <source src="isi link (audio musik latar belakang) disini" type="audio/mpeg">
     </audio>
 
     <div id="global-nav" style="display: none;">
-        <img id="btn-burger" class="btn-interactive" src="" width="60" height="60" onclick="toggleDropdown()">
-        <img id="btn-close-menu" class="btn-interactive" src="" width="60" height="60" style="display:none; position: absolute; top:0; left:0;" onclick="closeAllMenus()">
+        <img id="btn-burger" class="btn-interactive" src="isi link (tombol lingkaran garis 3) disini" width="60" height="60" onclick="toggleDropdown()">
+        <img id="btn-close-menu" class="btn-interactive" src="isi link (tombol x close) disini" width="60" height="60" style="display:none; position: absolute; top:0; left:0;" onclick="closeAllMenus()">
         
         <div id="dropdown-box" class="dropdown-menu">
             <div class="dropdown-item btn-interactive" onclick="goToScreen('screen-start')">HOME</div>
@@ -200,89 +203,88 @@
     </div>
 
     <div id="info-popup">
-        <div style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); width:600px; height:400px; background: url('') no-repeat center; background-size:100% 100%;">
+        <div style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); width:600px; height:400px; background: url('isi link (gambar papan kayu info atau gambar 2.jpg) disini') no-repeat center; background-size:100% 100%;">
             <div class="lazydog-text" style="font-size: 28px; color: #fff; margin-top: 100px; padding: 0 40px;">
-                GAME NINJA ARCADE V1.0<br><br>
-                Selamat datang! Game ini dirancang untuk latihan mengenal, membedakan, dan menulis huruf Hijaiyyah secara interaktif.
+                NINJA ARCADE INFO<br><br>
+                Game ini dibuat untuk latihan mengenal, membedakan, dan menulis huruf Hijaiyyah secara interaktif!
             </div>
         </div>
     </div>
 
 
-    <div id="screen-start" class="game-screen active" style="background: url('') no-repeat center; background-size: cover;">
+    <div id="screen-start" class="game-screen active" style="background: url('isi link (gambar latar 1.jpg) disini') no-repeat center; background-size: cover;">
         <div class="zoom-in-title" style="position: absolute; top: 15%; left: 25%; width: 50%;">
             <h1 class="lazydog-text" style="font-size: 70px; color: #1eb361;">NINJA ARCADE</h1>
             <p class="lazydog-text" style="font-size: 20px; color: #bd6a2c; -webkit-text-stroke: 1px white;">arabic recognition, challenges, and drawing exercise</p>
         </div>
         
-        <img class="btn-interactive" src="" width="220" height="110" style="position: absolute; top: 55%; left: 25%;" onclick="startPlay()">
+        <img class="btn-interactive" src="isi link (tombol start) disini" width="220" height="110" style="position: absolute; top: 55%; left: 25%;" onclick="startPlay()">
         
-        <img class="ninja-floating" src="" width="280" height="280" style="position: absolute; top: 40%; right: 15%;">
+        <img class="ninja-floating" src="isi link (gambar ninja menu utama) disini" width="280" height="280" style="position: absolute; top: 40%; right: 15%;">
     </div>
 
 
-    <div id="screen-mode-selection" class="game-screen" style="background: url('') no-repeat center; background-size: cover;">
+    <div id="screen-mode-selection" class="game-screen" style="background: url('isi link (gambar latar 3.jpg) disini') no-repeat center; background-size: cover;">
         <div style="position: absolute; top: 5%; left: 5%; width: 15%;"><h2 class="lazydog-text" style="font-size: 24px;">NINJA ARCADE</h2></div>
         
         <div style="position: absolute; top: 15%; left: 45%; display: flex; flex-direction: column; gap: 20px;">
-            <img class="btn-interactive" src="" width="320" height="90" onclick="goToScreen('screen-belajar-mengenal')">
-            <img class="btn-interactive" src="" width="320" height="90" onclick="goToScreen('screen-bermain-level')">
-            <img class="btn-interactive" src="" width="320" height="90" onclick="goToScreen('screen-latihan-list')">
+            <img class="btn-interactive" src="isi link (tombol belajar) disini" width="320" height="90" onclick="goToScreen('screen-belajar-mengenal')">
+            <img class="btn-interactive" src="asset/tombol_bermain.png" src="isi link (tombol bermain) disini" width="320" height="90" onclick="goToScreen('screen-bermain-level')">
+            <img class="btn-interactive" src="isi link (tombol latihan) disini" width="320" height="90" onclick="goToScreen('screen-latihan-list')">
         </div>
 
-        <img class="ninja-floating" src="" width="250" height="250" style="position: absolute; bottom: 10%; left: 15%;">
+        <img class="ninja-floating" src="isi link (gambar ninja berdiri) disini" width="250" height="250" style="position: absolute; bottom: 10%; left: 15%;">
     </div>
 
 
-    <div id="screen-belajar-mengenal" class="game-screen" style="background: url('') no-repeat center; background-size: cover;">
+    <div id="screen-belajar-mengenal" class="game-screen" style="background: url('isi link (gambar latar tampilan mengenal.png) disini') no-repeat center; background-size: cover;">
         <div class="lazydog-text" style="font-size: 45px; color: #b15e19; position: absolute; top: 20%; left: 40%; width: 50%;">
             AYO MENGENAL HURUF HIJAIYYAH
         </div>
-        <img class="btn-interactive" src="" width="200" height="100" style="position: absolute; bottom: 20%; left: 55%;" onclick="goToScreen('screen-belajar-kategori')">
-        <img class="ninja-floating" src="" width="250" height="250" style="position: absolute; bottom: 10%; left: 10%;">
+        <img class="btn-interactive" src="isi link (tombol papan start kayu kecil) disini" width="200" height="100" style="position: absolute; bottom: 20%; left: 55%;" onclick="goToScreen('screen-belajar-kategori')">
+        <img class="ninja-floating" src="isi link (gambar ninja berdiri) disini" width="250" height="250" style="position: absolute; bottom: 10%; left: 10%;">
     </div>
 
-    <div id="screen-belajar-kategori" class="game-screen" style="background: url('') no-repeat center; background-size: cover;">
+    <div id="screen-belajar-kategori" class="game-screen" style="background: url('isi link (gambar latar tampilan belajar.png) disini') no-repeat center; background-size: cover;">
         <div style="position: absolute; top: 15%; left: 45%; display: flex; flex-direction: column; gap: 15px;">
-            <img class="btn-interactive" src="" width="320" height="85" onclick="initMenuBelajar('asli')">
-            <img class="btn-interactive" src="" width="320" height="85" onclick="initMenuBelajar('harakat')">
-            <img class="btn-interactive" src="" width="320" height="85" onclick="initMenuBelajar('menulis')">
+            <img class="btn-interactive" src="isi link (tombol sub-menu huruf asli) disini" width="320" height="85" onclick="initMenuBelajar('asli')">
+            <img class="btn-interactive" src="isi link (tombol sub-menu huruf berharakat) disini" width="320" height="85" onclick="initMenuBelajar('harakat')">
+            <img class="btn-interactive" src="isi link (tombol sub-menu cara menulis) disini" width="320" height="85" onclick="initMenuBelajar('menulis')">
         </div>
-        <img class="ninja-floating" src="" width="250" height="250" style="position: absolute; bottom: 10%; left: 10%;">
+        <img class="ninja-floating" src="isi link (gambar ninja berdiri) disini" width="250" height="250" style="position: absolute; bottom: 10%; left: 10%;">
     </div>
 
 
-    <div id="screen-belajar-core" class="game-screen" style="background: url('') no-repeat center; background-size: cover;">
+    <div id="screen-belajar-core" class="game-screen" style="background: url('isi link (gambar latar Menu belajar huruf.png) disini') no-repeat center; background-size: cover;">
         <div id="belajar-title-instruction" class="lazydog-text" style="font-size: 24px; color:#fff; position: absolute; top: 8%; left: 35%;">TEKAN HURUF UNTUK MENDENGAR SUARA</div>
 
-        <div id="belajar-content-area" style="position: absolute; top: 25%; left: 40%; width: 40%; height: 40%; display: flex; justify-content: center; align-items: center; gap: 30px;">
-            </div>
+        <div id="belajar-content-area" style="position: absolute; top: 25%; left: 40%; width: 40%; height: 40%; display: flex; justify-content: center; align-items: center; gap: 30px;"></div>
 
-        <img class="btn-interactive" src="" width="70" height="70" style="position: absolute; top: 45%; left: 33%;" onclick="navigateLetter(-1)">
-        <img class="btn-interactive" src="" width="70" height="70" style="position: absolute; top: 45%; right: 23%;" onclick="navigateLetter(1)">
+        <img class="btn-interactive" src="isi link (tombol panah batu kiri) disini" width="70" height="70" style="position: absolute; top: 45%; left: 33%;" onclick="navigateLetter(-1)">
+        <img class="btn-interactive" src="isi link (tombol panah batu kanan) disini" width="70" height="70" style="position: absolute; top: 45%; right: 23%;" onclick="navigateLetter(1)">
 
         <div class="letter-bank-container" id="bank-huruf-list"></div>
 
-        <img class="ninja-floating" src="" width="250" height="250" style="position: absolute; bottom: 15%; left: 8%;">
+        <img class="ninja-floating" src="isi link (gambar ninja berdiri) disini" width="250" height="250" style="position: absolute; bottom: 15%; left: 8%;">
     </div>
 
 
-    <div id="screen-bermain-level" class="game-screen" style="background: url('') no-repeat center; background-size: cover;">
+    <div id="screen-bermain-level" class="game-screen" style="background: url('isi link (gambar latar pemilihan level 10.jpg) disini') no-repeat center; background-size: cover;">
         <div class="lazydog-text" style="font-size: 36px; margin-top: 50px;">PILIH LEVEL PERMAINAN</div>
         
         <div style="position: absolute; top: 40%; left: 50%; transform: translateX(-50%); display: flex; gap: 40px;">
             <div style="text-align: center;">
-                <img id="lvl-btn-1" class="btn-interactive" src="" width="90" height="90" onclick="startQuizLevel(1)">
+                <img id="lvl-btn-1" class="btn-interactive" src="isi link (tombol lingkaran level warna kuning) disini" width="90" height="90" onclick="startQuizLevel(1)">
                 <div class="lazydog-text" style="color:#fff; font-size:18px; margin-top:5px;">LEVEL 1</div>
             </div>
             <div style="text-align: center;">
-                <img id="lvl-btn-2" class="btn-interactive" src="" width="90" height="90" onclick="startQuizLevel(2)" style="filter: grayscale(0.3); pointer-events: none;">
+                <img id="lvl-btn-2" class="btn-interactive" src="isi link (tombol lingkaran level warna cokelat) disini" width="90" height="90" onclick="startQuizLevel(2)" style="filter: grayscale(0.3); pointer-events: none;">
                 <div class="lazydog-text" style="color:#fff; font-size:18px; margin-top:5px;">LEVEL 2</div>
             </div>
         </div>
     </div>
 
-    <div id="screen-quiz-gameplay" class="game-screen" style="background: url('') no-repeat center; background-size: cover;">
+    <div id="screen-quiz-gameplay" class="game-screen" style="background: url('isi link (gambar latar gameplay kuis 18.png) disini') no-repeat center; background-size: cover;">
         <div class="lazydog-text" id="quiz-score-display" style="position: absolute; top: 20px; left: 40px; font-size: 32px; color: #fff;">SKOR : 0</div>
         <div id="quiz-question-text" class="lazydog-text" style="font-size: 36px; color: #fff; position: absolute; top: 15%; width: 100%;">HURUF APAKAH INI?</div>
 
@@ -294,17 +296,17 @@
     </div>
 
 
-    <div id="screen-latihan-list" class="game-screen" style="background: url('') no-repeat center; background-size: cover;">
+    <div id="screen-latihan-list" class="game-screen" style="background: url('isi link (gambar latar mewarnai 11.jpg) disini') no-repeat center; background-size: cover;">
         <div class="lazydog-text" id="latihan-score-display" style="position: absolute; top: 20px; left: 40px; font-size: 32px; color: #fff;">SKOR : 0</div>
         <div class="lazydog-text" style="font-size: 32px; color:#fff; position: absolute; top: 10%; width:100%;">COBALAH MENULIS MANDIRI</div>
 
-        <div id="canvas-bg-box" style="position: absolute; top: 22%; left: 40%; width: 300px; height: 300px; background: url('') no-repeat center; background-size: contain; border: 4px dashed white; border-radius: 20px;">
+        <div id="canvas-bg-box" style="position: absolute; top: 22%; left: 40%; width: 300px; height: 300px; background: url('isi link (gambar awal outline huruf alif kosong) disini') no-repeat center; background-size: contain; border: 4px dashed white; border-radius: 20px;">
             <canvas id="writing-canvas" width="300" height="300"></canvas>
         </div>
 
         <div id="reward-overlay" style="display:none; position: absolute; top:25%; left:42%; width:260px; background: rgba(255,255,255,0.9); border-radius:20px; padding:20px; text-align:center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
-            <img src="" width="100">
-            <div class="lazydog-text" style="font-size:24px; color: green; margin-top:100px;">SEMPURNA!</div>
+            <img src="isi link (gambar lencana reward sempurna) disini" width="100">
+            <div class="lazydog-text" style="font-size:24px; color: green; margin-top:20px;">SEMPURNA!</div>
         </div>
 
         <div style="position: absolute; bottom: 15%; left: 42%; display:flex; gap:20px;">
@@ -312,55 +314,43 @@
             <button class="btn-interactive lazydog-text" style="padding: 10px 20px; font-size:20px; background:green; border-radius:10px; color:white; border:none;" onclick="checkWritingSuccess()">CEK HASIL</button>
         </div>
 
-        <img class="ninja-floating" src="" width="220" height="220" style="position: absolute; bottom: 10%; left: 8%;">
+        <img class="ninja-floating" src="isi link (gambar ninja berdiri) disini" width="220" height="220" style="position: absolute; bottom: 10%; left: 8%;">
     </div>
 
 </div>
 
 <script>
-    // ==========================================================================
-    // [NOTE 4] BANK DATA MASTER HIJAIYYAH (ISI LINK DETAIL ASET GAMBAR & AUDIO DI SINI)
-    // Tuliskan lokasi nama file aset kamu di dalam string kosong ini sesuai kelompok hurufnya.
-    // ==========================================================================
+    // ISI LINK GAMBAR DAN SUARA HURUF HIJAIYYAH DI KUMPULAN ARRAY BAWAH INI
     const letterData = [
         { 
             id: 0, 
             name: 'ALIF', 
-            imgAsli: '',     // Link gambar huruf asli
-            imgA: '',        // Link gambar berharakat fathah (A)
-            imgI: '',        // Link gambar berharakat kasrah (I)
-            imgU: '',        // Link gambar berharakat dhammah (U)
-            audio: '',       // Link audio lafal asli (.mp3)
-            audioA: '',      // Link audio lafal A
-            audioI: '',      // Link audio lafal I
-            audioU: '',      // Link audio lafal U
-            outline: '',     // Link gambar versi outline putus-putus (2aiii)
-            fullColor: ''    // Link gambar versi penuh warna setelah di-tracing animasi
+            imgAsli: 'isi link (gambar alif asli) disini', 
+            imgA: 'isi link (gambar alif fathah) disini', 
+            imgI: 'isi link (gambar alif kasrah) disini', 
+            imgU: 'isi link (gambar alif dhammah) disini', 
+            audio: 'isi link (audio suara alif) disini', 
+            audioA: 'isi link (audio suara a) disini', 
+            audioI: 'isi link (audio suara i) disini', 
+            audioU: 'isi link (audio suara u) disini', 
+            outline: 'isi link (gambar alif outline putih) disini', 
+            fullColor: 'isi link (gambar alif penuh warna sukses) disini' 
         },
         { 
             id: 1, 
             name: 'BA', 
-            imgAsli: '', imgA: '', imgI: '', imgU: '', 
-            audio: '', audioA: '', audioI: '', audioU: '', 
-            outline: '', fullColor: '' 
-        },
-        { 
-            id: 2, 
-            name: 'TA', 
-            imgAsli: '', imgA: '', imgI: '', imgU: '', 
-            audio: '', audioA: '', audioI: '', audioU: '', 
-            outline: '', fullColor: '' 
+            imgAsli: 'isi link (gambar ba asli) disini', 
+            imgA: 'isi link (gambar ba fathah) disini', 
+            imgI: 'isi link (gambar ba kasrah) disini', 
+            imgU: 'isi link (gambar ba dhammah) disini', 
+            audio: 'isi link (audio suara ba) disini', 
+            audioA: 'isi link (audio suara ba fathah) disini', 
+            audioI: 'isi link (audio suara ba kasrah) disini', 
+            audioU: 'isi link (audio suara ba dhammah) disini', 
+            outline: 'isi link (gambar ba outline putih) disini', 
+            fullColor: 'isi link (gambar ba penuh warna sukses) disini' 
         }
     ];
-
-    // Master Gambar Tombol Papan Kayu Pilihan Jawaban di Level Kuis
-    // ISI LINK GAMBAR PAPAN KAYU PILIHAN JAWABAN DI SINI
-    const imgWoodBoardLink = ""; 
-    // ISI LINK GAMBAR TANDA TANYA DI LEVEL 2 KUIS DI SINI
-    const imgQuestionMarkLink = ""; 
-    // ISI LINK GAMBAR PAPAN UTK LEVEL COKELAT DAN KUNING DI LEVEL KUIS DI SINI
-    const imgLvlYellowLink = "";
-    const imgLvlBrownLink = "";
 
     let currentLetterIndex = 0;
     let currentBelajarMode = 'asli'; 
@@ -415,7 +405,7 @@
             btn.innerText = "MUSIC OFF";
             musicPlaying = false;
         } else {
-            audio.play().catch(e => console.log("Menunggu interaksi pengguna"));
+            audio.play().catch(e => console.log("Audio play blocked"));
             btn.innerText = "MUSIC ON";
             musicPlaying = true;
         }
@@ -493,12 +483,7 @@
         renderLetterContent();
     }
 
-    function playAudio(src) {
-        if(src !== "") {
-            const sound = new Audio(src);
-            sound.play().catch(e => console.log("Audio file link kosong"));
-        }
-    }
+    function playAudio(src) { const sound = new Audio(src); sound.play().catch(e => {}); }
 
     let activeLevel = 1;
     function startQuizLevel(lvl) {
@@ -513,23 +498,19 @@
         const qText = document.getElementById('quiz-question-text');
         const ansBox = document.getElementById('quiz-answers-box');
         ansBox.innerHTML = '';
-
         const currentItem = letterData[quizCurrentQuestion % letterData.length];
 
         if (activeLevel === 1) {
             qText.innerText = "HURUF APAKAH INI?";
             centerImg.src = currentItem.imgAsli;
-
             const options = [currentItem.name, 'TSA']; 
             options.sort(() => Math.random() - 0.5);
-
             options.forEach(opt => {
-                ansBox.innerHTML += `<button class="btn-interactive lazydog-text" style="padding:15px 30px; font-size:24px; background:url('${imgWoodBoardLink}'); border:none; color:#fff; background-size:100% 100%;" onclick="checkQuizAnswer('${opt}', '${currentItem.name}')">${opt}</button>`;
+                ansBox.innerHTML += `<button class="btn-interactive lazydog-text" style="padding:15px 30px; font-size:24px; background:rgba(139,69,19,0.9); border:4px solid white; border-radius:10px; color:#fff;" onclick="checkQuizAnswer('${opt}', '${currentItem.name}')">${opt}</button>`;
             });
         } else if (activeLevel === 2) {
             qText.innerText = `MANAKAH HURUF YANG BERBUNYI "${currentItem.name}"?`;
-            centerImg.src = imgQuestionMarkLink; 
-
+            centerImg.src = ""; // Kosongkan/isi gambar papan kuis dekorasi jika ada
             letterData.forEach(item => {
                 ansBox.innerHTML += `<img class="btn-interactive" src="${item.imgAsli}" width="100" onclick="checkQuizAnswer('${item.name}', '${currentItem.name}')">`;
             });
@@ -540,24 +521,22 @@
         if (chosen === correct) {
             globalScore += 20;
             document.getElementById('quiz-score-display').innerText = `SKOR : ${globalScore}`;
-        }
+            alert("Sempurna!");
+        } else { alert("Coba lagi, Ninja!"); }
+
         quizCurrentQuestion++;
-        if (quizCurrentQuestion >= 3) {
-            alert(`Level Selesai! Skor Anda: ${globalScore}`);
+        if (quizCurrentQuestion >= 2) { 
+            alert(`Level Selesai! Skor: ${globalScore}`);
             if (activeLevel === 1) {
                 level2Unlocked = true;
                 const lvl2Img = document.getElementById('lvl-btn-2');
-                lvl2Img.src = imgLvlYellowLink;
                 lvl2Img.style.filter = "none";
                 lvl2Img.style.pointerEvents = "auto";
             }
             goToScreen('screen-bermain-level');
-        } else {
-            generateQuizQuestion();
-        }
+        } else { generateQuizQuestion(); }
     }
 
-    // CANVAS DRAWING LOGIC (2c)
     const canvas = document.getElementById('writing-canvas');
     const ctx = canvas.getContext('2d');
     let drawing = false;
@@ -570,7 +549,6 @@
     canvas.addEventListener('mousedown', () => drawing = true);
     canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
     canvas.addEventListener('mousemove', drawMandiri);
-
     canvas.addEventListener('touchstart', (e) => { drawing = true; e.preventDefault(); });
     canvas.addEventListener('touchend', () => { drawing = false; ctx.beginPath(); });
     canvas.addEventListener('touchmove', (e) => {
@@ -578,18 +556,14 @@
         const rect = canvas.getBoundingClientRect();
         const touch = e.touches[0];
         ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+        ctx.stroke(); ctx.beginPath(); ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
     });
 
     function drawMandiri(e) {
         if (!drawing) return;
         const rect = canvas.getBoundingClientRect();
         ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        ctx.stroke(); ctx.beginPath(); ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
     }
 
     function clearCanvas() {
@@ -601,6 +575,10 @@
         document.getElementById('reward-overlay').style.display = 'block';
         globalScore += 50;
         document.getElementById('latihan-score-display').innerText = `SKOR : ${globalScore}`;
+        
+        // Mengubah gambar latar belakang box canvas menjadi versi berwarna penuh
+        const currentItem = letterData[currentLetterIndex];
+        document.getElementById('canvas-bg-box').style.backgroundImage = `url('${currentItem.fullColor}')`;
     }
 </script>
 
