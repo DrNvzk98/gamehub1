@@ -46,7 +46,7 @@
         }
 
         /* ==========================================================================
-           [NOTE 2] PARALLAX EFFECT (Awan & Latar Belakang)
+           [NOTE 2] PARALLAX EFFECT (Awan Berjalan Otomatis)
            ========================================================================== */
         .parallax-layer {
             position: absolute;
@@ -79,6 +79,7 @@
             50% { transform: translateY(-15px); }
         }
 
+        /* Animasi Pop-Up Cepat Khusus Gambar Judul Utama */
         .zoom-in-title {
             animation: titleZoom 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
@@ -92,7 +93,7 @@
             transition: transform 0.2s ease;
         }
         .btn-interactive:hover {
-            transform: scale(1.08); /* Efek zoom-in sedikit saat ditunjuk */
+            transform: scale(1.08); /* Efek membesar sedikit saat ditunjuk */
         }
         .btn-interactive:active {
             transform: scale(0.95);
@@ -213,23 +214,24 @@
 
 
     <div id="screen-start" class="game-screen active" style="background: url('isi link (gambar latar 1.jpg) disini') no-repeat center; background-size: cover;">
-        <div class="zoom-in-title" style="position: absolute; top: 15%; left: 25%; width: 50%;">
-            <h1 class="lazydog-text" style="font-size: 70px; color: #1eb361;">NINJA ARCADE</h1>
-            <p class="lazydog-text" style="font-size: 20px; color: #bd6a2c; -webkit-text-stroke: 1px white;">arabic recognition, challenges, and drawing exercise</p>
+        <div style="position: absolute; top: 12%; left: 15%; width: 50%; height: auto; text-align: center;">
+            <img class="zoom-in-title" src="isi link (gambar tulisan judul ninja arcade dari canva) disini" style="max-width: 100%; height: auto;">
         </div>
         
-        <img class="btn-interactive" src="isi link (tombol start) disini" width="220" height="110" style="position: absolute; top: 55%; left: 25%;" onclick="startPlay()">
+        <img class="btn-interactive" src="isi link (tombol start) disini" width="220" height="110" style="position: absolute; top: 58%; left: 25%;" onclick="startPlay()">
         
         <img class="ninja-floating" src="isi link (gambar ninja menu utama) disini" width="280" height="280" style="position: absolute; top: 40%; right: 15%;">
     </div>
 
 
     <div id="screen-mode-selection" class="game-screen" style="background: url('isi link (gambar latar 3.jpg) disini') no-repeat center; background-size: cover;">
-        <div style="position: absolute; top: 5%; left: 5%; width: 15%;"><h2 class="lazydog-text" style="font-size: 24px;">NINJA ARCADE</h2></div>
+        <div style="position: absolute; top: 4%; left: 4%; width: 18%;">
+            <img src="isi link (gambar tulisan judul ninja arcade dari canva) disini" style="max-width: 100%; height: auto;">
+        </div>
         
         <div style="position: absolute; top: 15%; left: 45%; display: flex; flex-direction: column; gap: 20px;">
             <img class="btn-interactive" src="isi link (tombol belajar) disini" width="320" height="90" onclick="goToScreen('screen-belajar-mengenal')">
-            <img class="btn-interactive" src="asset/tombol_bermain.png" src="isi link (tombol bermain) disini" width="320" height="90" onclick="goToScreen('screen-bermain-level')">
+            <img class="btn-interactive" src="isi link (tombol bermain) disini" width="320" height="90" onclick="goToScreen('screen-bermain-level')">
             <img class="btn-interactive" src="isi link (tombol latihan) disini" width="320" height="90" onclick="goToScreen('screen-latihan-list')">
         </div>
 
@@ -510,7 +512,7 @@
             });
         } else if (activeLevel === 2) {
             qText.innerText = `MANAKAH HURUF YANG BERBUNYI "${currentItem.name}"?`;
-            centerImg.src = ""; // Kosongkan/isi gambar papan kuis dekorasi jika ada
+            centerImg.src = ""; 
             letterData.forEach(item => {
                 ansBox.innerHTML += `<img class="btn-interactive" src="${item.imgAsli}" width="100" onclick="checkQuizAnswer('${item.name}', '${currentItem.name}')">`;
             });
@@ -532,6 +534,7 @@
                 const lvl2Img = document.getElementById('lvl-btn-2');
                 lvl2Img.style.filter = "none";
                 lvl2Img.style.pointerEvents = "auto";
+                lvl2Img.src = "isi link (tombol lingkaran level warna kuning) disini"; // Buka gembok lvl 2
             }
             goToScreen('screen-bermain-level');
         } else { generateQuizQuestion(); }
@@ -576,7 +579,6 @@
         globalScore += 50;
         document.getElementById('latihan-score-display').innerText = `SKOR : ${globalScore}`;
         
-        // Mengubah gambar latar belakang box canvas menjadi versi berwarna penuh
         const currentItem = letterData[currentLetterIndex];
         document.getElementById('canvas-bg-box').style.backgroundImage = `url('${currentItem.fullColor}')`;
     }
