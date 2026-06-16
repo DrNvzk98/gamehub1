@@ -3,237 +3,631 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game UI Ninja V3 - Full Image Buttons</title>
+    <title>Ninja Arcade - Arabic Education Game</title>
     <style>
         /* ==========================================================================
-           1. ATURAN DASAR & VIEWPORT GAME (ASPEK RASIO 16:9)
+           [NOTE 1] PENGATURAN FONT GLOBAL & UTAN ASPEK RATIO (16:9)
+           Kamu bisa mengganti font 'Lazydog' di sini. Pastikan file font sudah ada di folder project.
            ========================================================================== */
-        *, *::before, *::after {
+        @font-face {
+            font-family: 'Lazydog';
+            src: url('asset/font/lazydog.ttf') format('truetype'); /* Sesuaikan path file font kamu */
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        * {
             box-sizing: border-box;
             user-select: none;
-            -webkit-user-select: none;
+            margin: 0;
+            padding: 0;
         }
-        
+
         body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            overflow: hidden; background-color: #1a1a1a;
-            font-family: 'Arial Rounded MT Bold', 'Segoe UI', sans-serif;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #1a1a1a;
+            font-family: 'Lazydog', sans-serif;
         }
 
+        /* Viewport Game Utama agar Responsif tapi Tetap Terjaga di Rasio 16:9 */
         #game-viewport {
-            position: absolute; top: 0; bottom: 0; left: 0; right: 0;
-            width: 100vw; height: 56.25vw; max-height: 100vh; max-width: 177.78vh; 
-            margin: auto; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            background: #7ec0ee;
-        }
-
-        /* ==========================================================================
-           2. PENGATURAN GAMBAR LATAR BELAKANG & KARAKTER
-           ========================================================================== */
-        .layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover; background-position: center; background-repeat: no-repeat;
-            will-change: transform;
-        }
-        #layer-sky { z-index: 1; background-image: linear-gradient(to bottom, #4ba3e3, #a1d6f7); }
-        
-        /* ISI LINK GAMBAR BACKGROUND DI SINI */
-        #layer-clouds { z-index: -2; opacity: 0.85; animation: cloudFloat 60s linear infinite; background-image: url('asset/images/awan2.png'); }
-        #layer-mountain { z-index: 3; y-index: -2; transform-origin: bottom;animation: cloudFloat 180s linear infinite; background-image: url('asset/images/gunung.png'); }
-
-        /* Karakter Ninja Bergerak Naik-Turun */
-        .character-ninja {
-            position: absolute; z-index: 30;
-            animation: ninjaBob 2.5s ease-in-out infinite;
-            display: flex; flex-direction: column; align-items: center;
-        }
-        .character-img {
-            width: 400%; height: auto;
-            content: url('asset/images/karakter.png'); /* ISI LINK GAMBAR NINJA */
-        }
-
-        /* ==========================================================================
-           3. SISTEM TOMBOL GAMBAR & PENGATURAN POSISI (GAYA UTAMA)
-           ========================================================================== */
-        /* Semua komponen tombol menggunakan kelas dasar ini */
-        .game-btn {
             position: absolute;
-            z-index: 50;
-            cursor: pointer;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            border: none;
-            background-color: transparent;
-            /* Efek Zoom In saat didekati kursor */
-            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.25);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 56.25vw; /* Aspek Rasio 16:9 */
+            max-height: 100vh;
+            max-width: 177.78vh;
+            background-color: #7ec0ee;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-
-        .game-btn:hover {
-            transform: scale(1.1) !important; /* Membesar sedikit */
-        }
-
-        .game-btn:active {
-            transform: scale(0.95) !important; /* Mengecil saat diklik */
-        }
-
-        /* Tampilan Adegan/Layar Game */
-        .ui-scene {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 10; display: none;
-        }
-        .ui-scene.active { display: block; }
 
         /* ==========================================================================
-           4. STRUKTUR MENU DROPDOWN (GARIS TIGA)
+           [NOTE 2] EFEK PARALLAX BACKGROUND (Awan, Gunung, Bukit)
+           Kamu bisa mengatur kecepatan durasi (s) di masing-masing animation.
            ========================================================================== */
-        .hud-menu-container {
-            position: absolute; top: 4%; right: 4%; z-index: 100;
-            display: flex; flex-direction: column; align-items: flex-end; gap: 8px;
-        }
-        .dropdown-menu {
-            display: flex; flex-direction: column; gap: 6px;
-            max-height: 0; opacity: 0; overflow: hidden;
-            transition: max-height 0.3s ease-out, opacity 0.2s ease;
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
             pointer-events: none;
         }
-        .dropdown-menu.show { max-height: 400px; opacity: 1; pointer-events: auto; }
+
+        /* Contoh pergerakan awan secara parallax dengan delay berbeda */
+        .cloud-1 {
+            animation: moveBg 25s linear infinite;
+        }
+        .cloud-2 {
+            animation: moveBg 35s linear infinite;
+            animation-delay: -5s;
+        }
+        .cloud-3 {
+            animation: moveBg 45s linear infinite;
+            animation-delay: -12s;
+        }
+
+        @keyframes moveBg {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
 
         /* ==========================================================================
-           5. TEKS PERINTAH & SKOR (MURNI TEKS)
+           [NOTE 3] ANIMASI INTERAKTIF (Ninja & Tombol Zoom-In)
            ========================================================================== */
-        .game-instruction-text {
-            position: absolute; top: 5%; width: 100%; text-align: center;
-            font-size: 2.5vw; font-weight: bold; color: #fff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8); z-index: 40; letter-spacing: 1px;
+        /* Animasi Ninja Naik Turun Halus (Floating) */
+        .ninja-floating {
+            animation: ninjaFloat 3s ease-in-out infinite;
         }
-        .canvas-tracing-container {
-            position: absolute; left: 34%; top: 25%; width: 32%; height: 60%;
-            background: rgba(255, 255, 255, 0.95); border-radius: 24px;
-            border: 6px solid #333; display: flex; align-items: center; justify-content: center; z-index: 30;
+        @keyframes ninjaFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
         }
-        .tracing-path-mockup { width: 80%; height: 80%; border: 6px dashed #aaa; border-radius: 50% 0 50% 50%; }
 
-        /* Keyframes Animasi */
-        @keyframes ninjaBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-        @keyframes cloudFloat { 0% { background-position-x: 0px; } 100% { background-position-x: 2000px; } }
+        /* Efek Zoom-In Cepat untuk Judul di Layar Start */
+        .zoom-in-title {
+            animation: titleZoom 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes titleZoom {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Efek Hover Membesar Sedikit untuk Semua Tombol yang Bisa Ditekan */
+        .btn-interactive {
+            cursor: pointer;
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+        .btn-interactive:hover {
+            transform: scale(1.08); /* Membesar 8% saat ditunjuk mouse */
+        }
+        .btn-interactive:active {
+            transform: scale(0.95); /* Mengecil dikit saat diklik */
+        }
+
+        /* Gaya teks global dengan outline putih tebal */
+        .lazydog-text {
+            font-family: 'Lazydog', sans-serif;
+            color: #bd6a2c; /* Warna font bawaan (bisa diubah-ubah di elemen html-nya) */
+            -webkit-text-stroke: 2px white; /* Tebal outline putih */
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        /* ==========================================================================
+           STRUKTUR HALAMAN / SCREEN MANAGEMENT
+           ========================================================================== */
+        .game-screen {
+            display: none;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        .game-screen.active {
+            display: block;
+        }
+
+        /* Global UI Elements */
+        #global-nav {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 70px;
+            right: 0;
+            background: rgba(139, 69, 19, 0.95);
+            border: 4px solid #fff;
+            border-radius: 15px;
+            padding: 10px;
+            min-width: 150px;
+        }
+        .dropdown-item {
+            padding: 10px;
+            color: white;
+            text-align: center;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+        }
+        .dropdown-item:last-child { border: none; }
+
+        /* Pop-up Info */
+        #info-popup {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 200;
+        }
+
+        /* Layout Bank Huruf Horizontal Scroll */
+        .letter-bank-container {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            height: 100px;
+            background: url('asset/papan_kayu_panjang.png') no-repeat center;
+            background-size: 100% 100%;
+            overflow-x: auto;
+            white-space: nowrap;
+            padding: 15px 30px;
+        }
+        .bank-item {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            margin-right: 15px;
+        }
+
+        /* Canvas mewarnai untuk Menu Latihan 2c */
+        #writing-canvas {
+            background: transparent;
+            cursor: crosshair;
+            border-radius: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <div id="game-viewport">
-        <div id="layer-sky" class="layer"></div>
-        <div id="layer-clouds" class="layer"></div>
-        <div id="layer-mountain" class="layer"></div>
+<div id="game-viewport">
 
-        <div class="hud-menu-container">
-            <button class="game-btn" onclick="toggleDropdown()" 
-                    style="position: static; width: 6vw; height: 6vw; background-image: url('LINK_TOMB_GARISTIGA.png');"></button>
-            
-            <div id="myDropdown" class="dropdown-menu" style="width: 15vw;">
-                <button class="game-btn" onclick="triggerMenuAction('info')" style="position:static; width:100%; height:4vw; background-image:url('LINK_TOMB_INFO.png');"></button>
-                <button class="game-btn" id="audio-toggle-btn" onclick="triggerMenuAction('musik')" style="position:static; width:100%; height:4vw; background-image:url('LINK_TOMB_MUSIK_ON.png');"></button>
-                <button class="game-btn" onclick="triggerMenuAction('home')" style="position:static; width:100%; height:4vw; background-image:url('LINK_TOMB_HOME.png');"></button>
-            </div>
+    <div class="parallax-layer cloud-1" style="background-image: url('asset/awan1.png'); opacity: 0.5;"></div>
+    <div class="parallax-layer cloud-2" style="background-image: url('asset/awan2.png'); opacity: 0.3;"></div>
+    
+    <audio id="bgm" loop>
+        <source src="asset/audio/bgm_ninja.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="global-nav" style="display: none;">
+        <img id="btn-burger" class="btn-interactive" src="asset/tombol_garis3.png" width="60" height="60" onclick="toggleDropdown()">
+        <img id="btn-close-menu" class="btn-interactive" src="asset/tombol_x.png" width="60" height="60" style="display:none; position: absolute; top:0; left:0;" onclick="closeAllMenus()">
+        
+        <div id-="dropdown-box" class="dropdown-menu">
+            <div class="dropdown-item btn-interactive" onclick="goToScreen('screen-start')">HOME</div>
+            <div id="btn-toggle-music" class="dropdown-item btn-interactive" onclick="toggleMusic()">MUSIC ON</div>
+            <div class="dropdown-item btn-interactive" onclick="showInfoPopup()">INFO</div>
         </div>
+    </div>
 
-        <div id="scene-start" class="ui-scene active">
-            <button class="game-btn" onclick="switchScene('scene-menu')" 
-                    style="width: 22%; height: 12%; left: 39%; bottom: 25%; background-image: url('asset/tombol/Start.png');"></button>
-            
-            <div class="character-ninja" style="width: 16%; right: 12%; bottom: 12%;">
-                <img class="character-img" alt="Ninja">
-            </div>
-        </div>
-
-        <div id="scene-menu" class="ui-scene">
-            <button class="game-btn" onclick="switchScene('scene-levels')" 
-                    style="width: 32%; height: 10%; left: 34%; top: 30%; background-image: url('LINK_TOMBO_KAYU_1.png');"></button>
-            <button class="game-btn" 
-                    style="width: 32%; height: 10%; left: 34%; top: 45%; background-image: url('LINK_TOMBO_KAYU_2.png');"></button>
-            <button class="game-btn" 
-                    style="width: 32%; height: 10%; left: 34%; top: 60%; background-image: url('LINK_TOMBO_KAYU_3.png');"></button>
-            
-            <div class="character-ninja" style="width: 16%; left: 10%; bottom: 12%;">
-                <img class="character-img" alt="Ninja">
-            </div>
-        </div>
-
-        <div id="scene-levels" class="ui-scene">
-            <div style="position: absolute; width: 40%; height: 12%; left: 30%; top: 8%; background: url('LINK_BANNER_LEVEL.png') no-repeat center; background-size: contain;"></div>
-            
-            <button class="game-btn" onclick="switchScene('scene-gameplay')" style="width: 7%; height: 12%; left: 32%; top: 35%; background-image: url('LINK_ANGKA_1.png');"></button>
-            <button class="game-btn" style="width: 7%; height: 12%; left: 42%; top: 35%; background-image: url('LINK_ANGKA_2.png');"></button>
-            <button class="game-btn" style="width: 7%; height: 12%; left: 52%; top: 35%; background-image: url('LINK_ANGKA_3.png');"></button>
-            <button class="game-btn" style="width: 7%; height: 12%; left: 62%; top: 35%; background-image: url('LINK_ANGKA_4.png');"></button>
-
-            <div class="character-ninja" style="width: 14%; left: 8%; bottom: 12%;">
-                <img class="character-img" alt="Ninja">
-            </div>
-        </div>
-
-        <div id="scene-gameplay" class="ui-scene">
-            <div class="game-instruction-text">TEBALKAN HURUF DI BAWAH SESUAI GARIS</div>
-            
-            <div class="canvas-tracing-container">
-                <div class="tracing-path-mockup"></div>
-            </div>
-
-            <div class="character-ninja" style="width: 16%; right: 10%; bottom: 12%;">
-                <img class="character-img" alt="Ninja">
+    <div id="info-popup">
+        <div style="position: absolute; top:50%; left:50%; transform: translate(-50%, -50%); width:600px; height:400px; background: url('asset/2.jpg') no-repeat center; background-size:100% 100%;">
+            <div class="lazydog-text" style="font-size: 28px; color: #fff; margin-top: 100px; padding: 0 40px;">
+                GAME NINJA ARCADE V1.0<br><br>
+                Selamat datang! Game ini dirancang untuk latihan mengenal, membedakan, dan menulis huruf Hijaiyyah secara interaktif.
             </div>
         </div>
     </div>
 
-    <script>
-        const viewport = document.getElementById('game-viewport');
-        const mountain = document.getElementById('layer-mountain');
-        const clouds = document.getElementById('layer-clouds');
-        const dropdown = document.getElementById('myDropdown');
-        let isMusicOn = true;
 
-        // Parallax Kamera Efek Bergerak
-        viewport.addEventListener('mousemove', (e) => {
-            const rect = viewport.getBoundingClientRect();
-            const x = e.clientX - rect.left - (rect.width / 2);
-            const y = e.clientY - rect.top - (rect.height / 2);
-            mountain.style.transform = `translate(${x * 0.02}px, ${y * 0.01}px) scale(1.05)`;
-            clouds.style.transform = `translate(${x * 0.005}px, 0px)`;
+    <div id="screen-start" class="game-screen active" style="background: url('asset/1.jpg') no-repeat center; background-size: cover;">
+        <div class="zoom-in-title" style="position: absolute; top: 15%; left: 25%; width: 50%;">
+            <h1 class="lazydog-text" style="font-size: 70px; color: #1eb361;">NINJA ARCADE</h1>
+            <p class="lazydog-text" style="font-size: 20px; color: #bd6a2c; -webkit-text-stroke: 1px white;">arabic recognition, challenges, and drawing exercise</p>
+        </div>
+        
+        <img class="btn-interactive" src="asset/tombol_start.png" width="220" height="110" style="position: absolute; top: 55%; left: 25%;" onclick="startPlay()">
+        
+        <img class="ninja-floating" src="asset/ninja_menu.png" width="280" height="280" style="position: absolute; top: 40%; right: 15%;">
+    </div>
+
+
+    <div id="screen-mode-selection" class="game-screen" style="background: url('asset/3.jpg') no-repeat center; background-size: cover;">
+        <div style="position: absolute; top: 5%; left: 5%; width: 15%;"><h2 class="lazydog-text" style="font-size: 24px;">NINJA ARCADE</h2></div>
+        
+        <div style="position: absolute; top: 15%; left: 45%; display: flex; flex-direction: column; gap: 20px;">
+            <img class="btn-interactive" src="asset/tombol_belajar.png" width="320" height="90" onclick="goToScreen('screen-belajar-mengenal')">
+            <img class="btn-interactive" src="asset/tombol_bermain.png" width="320" height="90" onclick="goToScreen('screen-bermain-level')">
+            <img class="btn-interactive" src="asset/tombol_latihan.png" width="320" height="90" onclick="goToScreen('screen-latihan-list')">
+        </div>
+
+        <img class="ninja-floating" src="asset/ninja_stand.png" width="250" height="250" style="position: absolute; bottom: 10%; left: 15%;">
+    </div>
+
+
+    <div id="screen-belajar-mengenal" class="game-screen" style="background: url('asset/tampilan mengenal.png') no-repeat center; background-size: cover;">
+        <div class="lazydog-text" style="font-size: 45px; color: #b15e19; position: absolute; top: 20%; left: 40%; width: 50%;">
+            AYO MENGENAL HURUF HIJAIYYAH
+        </div>
+        <img class="btn-interactive" src="asset/papan_start_kayu.png" width="200" height="100" style="position: absolute; bottom: 20%; left: 55%;" onclick="goToScreen('screen-belajar-kategori')">
+        <img class="ninja-floating" src="asset/ninja_stand.png" width="250" height="250" style="position: absolute; bottom: 10%; left: 10%;">
+    </div>
+
+    <div id="screen-belajar-kategori" class="game-screen" style="background: url('asset/tampilan belajar.png') no-repeat center; background-size: cover;">
+        <div style="position: absolute; top: 15%; left: 45%; display: flex; flex-direction: column; gap: 15px;">
+            <img class="btn-interactive" src="asset/tombol_huruf_asli.png" width="320" height="85" onclick="initMenuBelajar('asli')">
+            <img class="btn-interactive" src="asset/tombol_huruf_berharakat.png" width="320" height="85" onclick="initMenuBelajar('harakat')">
+            <img class="btn-interactive" src="asset/tombol_menulis.png" width="320" height="85" onclick="initMenuBelajar('menulis')">
+        </div>
+        <img class="ninja-floating" src="asset/ninja_stand.png" width="250" height="250" style="position: absolute; bottom: 10%; left: 10%;">
+    </div>
+
+
+    <div id="screen-belajar-core" class="game-screen" style="background: url('asset/Menu belajar huruf.png') no-repeat center; background-size: cover;">
+        <div id="belajar-title-instruction" class="lazydog-text" style="font-size: 24px; color:#fff; position: absolute; top: 8%; left: 35%;">TEKAN HURUF UNTUK MENDENGAR SUARA</div>
+
+        <div id="belajar-content-area" style="position: absolute; top: 25%; left: 40%; width: 40%; height: 40%; display: flex; justify-content: center; align-items: center; gap: 30px;">
+            </div>
+
+        <img class="btn-interactive" src="asset/panah_kiri.png" width="70" height="70" style="position: absolute; top: 45%; left: 33%;" onclick="navigateLetter(-1)">
+        <img class="btn-interactive" src="asset/panah_kanan.png" width="70" height="70" style="position: absolute; top: 45%; right: 23%;" onclick="navigateLetter(1)">
+
+        <div class="letter-bank-container" id="bank-huruf-list">
+            </div>
+
+        <img class="ninja-floating" src="asset/ninja_stand.png" width="250" height="250" style="position: absolute; bottom: 15%; left: 8%;">
+    </div>
+
+
+    <div id="screen-bermain-level" class="game-screen" style="background: url('asset/10.jpg') no-repeat center; background-size: cover;">
+        <div class="lazydog-text" style="font-size: 36px; margin-top: 50px;">PILIH LEVEL PERMAINAN</div>
+        
+        <div style="position: absolute; top: 40%; left: 50%; transform: translateX(-50%); display: flex; gap: 40px;">
+            <div style="text-align: center;">
+                <img id="lvl-btn-1" class="btn-interactive" src="asset/tombol_level_kuning.png" width="90" height="90" onclick="startQuizLevel(1)">
+                <div class="lazydog-text" style="color:#fff; font-size:18px; margin-top:5px;">LEVEL 1</div>
+            </div>
+            <div style="text-align: center;">
+                <img id="lvl-btn-2" class="btn-interactive" src="asset/tombol_level_coklat.png" width="90" height="90" onclick="startQuizLevel(2)" style="filter: grayscale(0.3); pointer-events: none;">
+                <div class="lazydog-text" style="color:#fff; font-size:18px; margin-top:5px;">LEVEL 2</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-quiz-gameplay" class="game-screen" style="background: url('asset/18.png') no-repeat center; background-size: cover;">
+        <div class="lazydog-text" id="quiz-score-display" style="position: absolute; top: 20px; left: 40px; font-size: 32px; color: #fff;">SKOR : 0</div>
+        
+        <div id="quiz-question-text" class="lazydog-text" style="font-size: 36px; color: #fff; position: absolute; top: 15%; width: 100%;">HURUF APAKAH INI?</div>
+
+        <div style="position: absolute; top: 30%; left: 45%; width: 15%; height: 30%; display:flex; justify-content:center; align-items:center;">
+            <img id="quiz-center-image" src="" style="max-width:100%; max-height:100%;">
+        </div>
+
+        <div id="quiz-answers-box" style="position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%); display: flex; gap: 30px;">
+            </div>
+    </div>
+
+
+    <div id="screen-latihan-list" class="game-screen" style="background: url('asset/11.jpg') no-repeat center; background-size: cover;">
+        <div class="lazydog-text" id="latihan-score-display" style="position: absolute; top: 20px; left: 40px; font-size: 32px; color: #fff;">SKOR : 0</div>
+        <div class="lazydog-text" style="font-size: 32px; color:#fff; position: absolute; top: 10%; width:100%;">COBALAH MENULIS MANDIRI</div>
+
+        <div style="position: absolute; top: 22%; left: 40%; width: 300px; height: 300px; background: url('asset/outline_alif.png') no-repeat center; background-size: contain; border: 4px dashed white; border-radius: 20px;">
+            <canvas id="writing-canvas" width="300" height="300"></canvas>
+        </div>
+
+        <div id="reward-overlay" style="display:none; position: absolute; top:25%; left:42%; width:260px; background: rgba(255,255,255,0.9); border-radius:20px; padding:20px; text-align:center; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
+            <img src="asset/reward_sempurna.png" width="100">
+            <div class="lazydog-text" style="font-size:24px; color: green; margin-top:100px;">SEMPURNA!</div>
+        </div>
+
+        <div style="position: absolute; bottom: 15%; left: 42%; display:flex; gap:20px;">
+            <button class="btn-interactive lazydog-text" style="padding: 10px 20px; font-size:20px; background:#bd6a2c; border-radius:10px; color:#width;" onclick="clearCanvas()">HAPUS</button>
+            <button class="btn-interactive lazydog-text" style="padding: 10px 20px; font-size:20px; background:green; border-radius:10px; color:#width;" onclick="checkWritingSuccess()">CEK HASIL</button>
+        </div>
+
+        <img class="ninja-floating" src="asset/ninja_stand.png" width="220" height="220" style="position: absolute; bottom: 10%; left: 8%;">
+    </div>
+
+</div>
+
+<script>
+    // [NOTE 4] DATA MASTER HURUF HIJAIYYAH (Kunci Jawaban & Nama File Aset)
+    // Kamu tinggal menyesuaikan nama file gambar (.png) dan suara (.mp3) di array bawah ini.
+    const letterData = [
+        { id: 0, name: 'ALIF', imgAsli: 'alif.png', imgA: 'alif_f_a.png', imgI: 'alif_k_i.png', imgU: 'alif_d_u.png', audio: 'alif.mp3', audioA: 'a.mp3', audioI: 'i.mp3', audioU: 'u.mp3', outline: 'outline_alif.png', fullColor: 'color_alif.png' },
+        { id: 1, name: 'BA', imgAsli: 'ba.png', imgA: 'ba_a.png', imgI: 'ba_i.png', imgU: 'ba_u.png', audio: 'ba.mp3', audioA: 'ba_f.mp3', audioI: 'ba_k.mp3', audioU: 'ba_d.mp3', outline: 'outline_ba.png', fullColor: 'color_ba.png' },
+        { id: 2, name: 'TA', imgAsli: 'ta.png', imgA: 'ta_a.png', imgI: 'ta_i.png', imgU: 'ta_u.png', audio: 'ta.mp3', audioA: 'ta_f.mp3', audioI: 'ta_k.mp3', audioU: 'ta_d.mp3', outline: 'outline_ta.png', fullColor: 'color_ta.png' }
+    ];
+
+    let currentLetterIndex = 0;
+    let currentBelajarMode = 'asli'; // asli, harakat, menulis
+    let globalScore = 0;
+    let musicPlaying = false;
+    let level2Unlocked = false;
+    let quizCurrentQuestion = 0;
+
+    // Sistem Navigasi Antar Layar
+    function goToScreen(screenId) {
+        document.querySelectorAll('.game-screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+        
+        // Atur penampakan tombol burger menu lingkaran garis 3
+        if (screenId === 'screen-start') {
+            document.getElementById('global-nav').style.display = 'none';
+        } else {
+            document.getElementById('global-nav').style.display = 'block';
+        }
+        closeAllMenus();
+    }
+
+    // Fungsi Mulai Main dari Halaman Start
+    function startPlay() {
+        if(!musicPlaying) {
+            toggleMusic(); // Putar musik otomatis saat start ditekan
+        }
+        goToScreen('screen-mode-selection');
+    }
+
+    // Logika Burger Menu Dropdown
+    function toggleDropdown() {
+        const dd = document.getElementById('dropdown-box');
+        const burger = document.getElementById('btn-burger');
+        const closeBtn = document.getElementById('btn-close-menu');
+        
+        if (dd.style.display === 'block') {
+            closeAllMenus();
+        } else {
+            dd.style.display = 'block';
+            burger.style.display = 'none';
+            closeBtn.style.display = 'block'; // Tombol silang menutupi tombol burger
+        }
+    }
+
+    function closeAllMenus() {
+        document.getElementById('dropdown-box').style.display = 'none';
+        document.getElementById('info-popup').style.display = 'none';
+        document.getElementById('btn-close-menu').style.display = 'none';
+        document.getElementById('btn-burger').style.display = 'block';
+    }
+
+    function showInfoPopup() {
+        document.getElementById('info-popup').style.display = 'block';
+    }
+
+    function toggleMusic() {
+        const audio = document.getElementById('bgm');
+        const btn = document.getElementById('btn-toggle-music');
+        if (musicPlaying) {
+            audio.pause();
+            btn.innerText = "MUSIC OFF";
+            musicPlaying = false;
+        } else {
+            audio.play().catch(e => console.log("Izin audio browser dibutuhkan"));
+            btn.innerText = "MUSIC ON";
+            musicPlaying = true;
+        }
+    }
+
+    // ==========================================================================
+    // INTEGRASI KATEGORI BELAJAR (2ai, 2aii, 2aiii)
+    // ==========================================================================
+    function initMenuBelajar(mode) {
+        currentBelajarMode = mode;
+        currentLetterIndex = 0;
+        goToScreen('screen-belajar-core');
+        renderLetterContent();
+        renderLetterBank();
+    }
+
+    function renderLetterContent() {
+        const area = document.getElementById('belajar-content-area');
+        const titleInst = document.getElementById('belajar-title-instruction');
+        const item = letterData[currentLetterIndex];
+        area.innerHTML = '';
+
+        if (currentBelajarMode === 'asli') {
+            titleInst.innerText = "TEKAN HURUF UNTUK MENDENGAR SUARA";
+            area.innerHTML = `
+                <div style="text-align:center;">
+                    <img class="btn-interactive" src="asset/${item.imgAsli}" width="150" onclick="playAudio('asset/audio/${item.audio}')"><br>
+                    <div class="lazydog-text" style="font-size:32px; color:#fff; margin-top:10px;">${item.name}</div>
+                </div>
+            `;
+        } else if (currentBelajarMode === 'harakat') {
+            titleInst.innerText = "TEKAN HURUF UNTUK MENDENGAR SUARA HARAKAT";
+            area.innerHTML = `
+                <div class="btn-interactive" style="text-align:center;" onclick="playAudio('asset/audio/${item.audioU}')">
+                    <img src="asset/${item.imgU}" width="90"><div class="lazydog-text" style="font-size:24px; color:#fff;">U</div>
+                </div>
+                <div class="btn-interactive" style="text-align:center;" onclick="playAudio('asset/audio/${item.audioI}')">
+                    <img src="asset/${item.imgI}" width="90"><div class="lazydog-text" style="font-size:24px; color:#fff;">I</div>
+                </div>
+                <div class="btn-interactive" style="text-align:center;" onclick="playAudio('asset/audio/${item.audioA}')">
+                    <img src="asset/${item.imgA}" width="90"><div class="lazydog-text" style="font-size:24px; color:#fff;">A</div>
+                </div>
+            `;
+        } else if (currentBelajarMode === 'menulis') {
+            titleInst.innerText = "TEKAN HURUF UNTUK MELIHAT CARA PENULISAN";
+            area.innerHTML = `
+                <div style="text-align:center;">
+                    <img id="animated-writing-img" class="btn-interactive" src="asset/${item.outline}" width="160" onclick="triggerWritingAnimation()">
+                    <div class="lazydog-text" style="font-size:28px; color:#fff; margin-top:10px;">${item.name}</div>
+                </div>
+            `;
+        }
+    }
+
+    function triggerWritingAnimation() {
+        const img = document.getElementById('animated-writing-img');
+        const item = letterData[currentLetterIndex];
+        // Logika animasi penggantian gambar ke versi penuh warna (2aiii)
+        img.src = `asset/${item.fullColor}`;
+        setTimeout(() => {
+            img.src = `asset/${item.outline}`;
+        }, 2500); // Kembali ke outline setelah 2.5 detik
+    }
+
+    function renderLetterBank() {
+        const bank = document.getElementById('bank-huruf-list');
+        bank.innerHTML = '';
+        letterData.forEach((item, index) => {
+            const node = document.createElement('img');
+            node.className = 'bank-item btn-interactive';
+            node.src = `asset/${item.imgAsli}`;
+            node.onclick = () => {
+                currentLetterIndex = index;
+                renderLetterContent();
+            };
+            bank.appendChild(node);
         });
+    }
 
-        function toggleDropdown() { dropdown.classList.toggle('show'); }
+    function navigateLetter(dir) {
+        currentLetterIndex += dir;
+        if (currentLetterIndex < 0) currentLetterIndex = letterData.length - 1;
+        if (currentLetterIndex >= letterData.length) currentLetterIndex = 0;
+        renderLetterContent();
+    }
 
-        window.onclick = function(event) {
-            if (!event.target.matches('.game-btn')) {
-                if (dropdown.classList.contains('show')) dropdown.classList.remove('show');
+    function playAudio(src) {
+        const sound = new Audio(src);
+        sound.play().catch(e => console.log("Gagal memuat file audio"));
+    }
+
+    // ==========================================================================
+    // LOGIKA PERMAINAN BERMAIN KUIS (2b)
+    // ==========================================================================
+    let activeLevel = 1;
+    function startQuizLevel(lvl) {
+        activeLevel = lvl;
+        quizCurrentQuestion = 0;
+        goToScreen('screen-quiz-gameplay');
+        generateQuizQuestion();
+    }
+
+    function generateQuizQuestion() {
+        const centerImg = document.getElementById('quiz-center-image');
+        const qText = document.getElementById('quiz-question-text');
+        const ansBox = document.getElementById('quiz-answers-box');
+        ansBox.innerHTML = '';
+
+        const currentItem = letterData[quizCurrentQuestion % letterData.length];
+
+        if (activeLevel === 1) {
+            // Level 1: Menentukan jenis/nama huruf dari gambar tengah
+            qText.innerText = "HURUF APAKAH INI?";
+            centerImg.src = `asset/${currentItem.imgAsli}`;
+
+            // Pilihan jawaban (1 Benar, 1 Salah)
+            const options = [currentItem.name, 'TSA']; 
+            options.sort(() => Math.random() - 0.5);
+
+            options.forEach(opt => {
+                ansBox.innerHTML += `<button class="btn-interactive lazydog-text" style="padding:15px 30px; font-size:24px; background:url('asset/papan.png'); border:none; color:#fff;" onclick="checkQuizAnswer('${opt}', '${currentItem.name}')">${opt}</button>`;
+            });
+        } else if (activeLevel === 2) {
+            // Level 2: Mencocokkan bunyi teks dengan pilihan bentuk gambar di bawah
+            qText.innerText = `MANAKAH HURUF YANG BERBUNYI "${currentItem.name}"?`;
+            centerImg.src = `asset/logo_tanda_tanya.png`; // Gambar hiasan tengah
+
+            // Tampilkan 3 pilihan bentuk gambar huruf hijaiyyah
+            letterData.forEach(item => {
+                ansBox.innerHTML += `<img class="btn-interactive" src="asset/${item.imgAsli}" width="100" onclick="checkQuizAnswer('${item.name}', '${currentItem.name}')">`;
+            });
+        }
+    }
+
+    function checkQuizAnswer(chosen, correct) {
+        if (chosen === correct) {
+            globalScore += 20;
+            document.getElementById('quiz-score-display').innerText = `SKOR : ${globalScore}`;
+            alert("NICE! Jawabanmu Tepat.");
+        } else {
+            alert("Waduh, Kurang Tepat! Ayo coba lagi.");
+        }
+
+        quizCurrentQuestion++;
+        if (quizCurrentQuestion >= 3) { // Batasi maksimal 3 soal per level
+            alert(`Level Selesai! Total Skor Anda: ${globalScore}`);
+            if (activeLevel === 1) {
+                // Membuka kunci level 2 (Mengubah tombol coklat menjadi kuning)
+                level2Unlocked = true;
+                const lvl2Img = document.getElementById('lvl-btn-2');
+                lvl2Img.src = "asset/tombol_level_kuning.png";
+                lvl2Img.style.filter = "none";
+                lvl2Img.style.pointerEvents = "auto";
             }
+            goToScreen('screen-bermain-level');
+        } else {
+            generateQuizQuestion();
         }
+    }
 
-        function triggerMenuAction(actionType) {
-            dropdown.classList.remove('show');
-            if (actionType === 'info') {
-                alert("Game Edukasi Menulis - Versi Gambar UI Penuh!");
-            } else if (actionType === 'musik') {
-                isMusicOn = !isMusicOn;
-                const musicBtn = document.getElementById('audio-toggle-btn');
-                if (isMusicOn) {
-                    musicBtn.style.backgroundImage = "url('LINK_TOMB_MUSIK_ON.png')";
-                    alert("Musik dinyalakan");
-                } else {
-                    musicBtn.style.backgroundImage = "url('LINK_TOMB_MUSIK_OFF.png')";
-                    alert("Musik dimatikan");
-                }
-            } else if (actionType === 'home') {
-                switchScene('scene-start');
-            }
-        }
+    // ==========================================================================
+    // LOGIKA CANVAS MENGGAMBAR MANUAL / TRACING (2c)
+    // ==========================================================================
+    const canvas = document.getElementById('writing-canvas');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
 
-        function switchScene(sceneId) {
-            const scenes = document.querySelectorAll('.ui-scene');
-            scenes.forEach(scene => scene.classList.remove('active'));
-            const targetScene = document.getElementById(sceneId);
-            if (targetScene) targetScene.classList.add('active');
-        }
-    </script>
+    // Seting bentuk kuas pewarnaan canvas mewarnai
+    ctx.strokeStyle = '#ff7f27'; // [NOTE] Ganti kode HEX di sini untuk mengubah warna goresan ninja
+    ctx.lineWidth = 14;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // Event Listener Mouse & Layar Sentuh HP
+    canvas.addEventListener('mousedown', () => drawing = true);
+    canvas.addEventListener('mouseup', () => { drawing = false; ctx.beginPath(); });
+    canvas.addEventListener('mousemove', drawMandiri);
+
+    canvas.addEventListener('touchstart', (e) => { drawing = true; e.preventDefault(); });
+    canvas.addEventListener('touchend', () => { drawing = false; ctx.beginPath(); });
+    canvas.addEventListener('touchmove', (e) => {
+        if(!drawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+    });
+
+    function drawMandiri(e) {
+        if (!drawing) return;
+        const rect = canvas.getBoundingClientRect();
+        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    }
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        document.getElementById('reward-overlay').style.display = 'none';
+    }
+
+    function checkWritingSuccess() {
+        // Logika verifikasi sederhana: jika layar tersentuh/terisi goresan mewarnai
+        // Kita puncaki dengan memunculkan reward sempurna (13.jpg / 14.jpg)
+        document.getElementById('reward-overlay').style.display = 'block';
+        globalScore += 50;
+        document.getElementById('latihan-score-display').innerText = `SKOR : ${globalScore}`;
+    }
+</script>
+
 </body>
 </html>
